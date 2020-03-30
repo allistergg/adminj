@@ -3,15 +3,43 @@ package com.smoothstack.lms.administrator.model;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@Entity
+@Table(name = "tbl_borrower")
+@JsonIgnoreProperties("hibernateLazyInitializer")
 public class Borrower implements Serializable {
 	
 	private static final long serialVersionUID = 4543830888442808309L;
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "cardno")
 	private Integer cardNo;
+	
+	@Column(name = "name")
 	private String borrowerName;
+	
+	@Column(name = "address")
 	private String borrowerAddress;
+	
+	@Column(name = "phone")
 	private String borrowerPhone;
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "loansIdentity.cardNo", cascade = CascadeType.REMOVE)
+	@JsonIgnoreProperties("borrower")
 	private List<Loan> loans;
- 	
+
 	public Integer getCardNo() {
 		return cardNo;
 	}
@@ -88,11 +116,6 @@ public class Borrower implements Serializable {
 		} else if (!loans.equals(other.loans))
 			return false;
 		return true;
-	}
-	@Override
-	public String toString() {
-		return "Borrower [cardNo=" + cardNo + ", borrowerName=" + borrowerName + ", borrowerAddress=" + borrowerAddress
-				+ ", borrowerPhone=" + borrowerPhone + ", loans=" + loans + "]";
 	}
 	
 }
